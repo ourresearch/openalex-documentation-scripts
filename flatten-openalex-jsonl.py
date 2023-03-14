@@ -116,16 +116,22 @@ csv_files = {
                 'is_retracted', 'is_paratext', 'cited_by_api_url', 'abstract_inverted_index'
             ]
         },
-        'host_venues': {
-            'name': os.path.join(CSV_DIR, 'works_host_venues.csv.gz'),
+        'primary_locations': {
+            'name': os.path.join(CSV_DIR, 'works_primary_locations.csv.gz'),
             'columns': [
-                'work_id', 'venue_id', 'url', 'is_oa', 'version', 'license'
+                'work_id', 'source_id', 'is_oa', 'landing_page_url', 'pdf_url', 'version', 'license'
             ]
         },
-        'alternate_host_venues': {
-            'name': os.path.join(CSV_DIR, 'works_alternate_host_venues.csv.gz'),
+        'locations': {
+            'name': os.path.join(CSV_DIR, 'works_locations.csv.gz'),
             'columns': [
-                'work_id', 'venue_id', 'url', 'is_oa', 'version', 'license'
+                'work_id', 'source_id', 'is_oa', 'landing_page_url', 'pdf_url', 'version', 'license'
+            ]
+        },
+        'best_oa_location': {
+            'name': os.path.join(CSV_DIR, 'works_best_oa_locations.csv.gz'),
+            'columns': [
+                'work_id', 'source_id', 'is_oa', 'landing_page_url', 'pdf_url', 'version', 'license'
             ]
         },
         'authorships': {
@@ -445,8 +451,9 @@ def flatten_works():
     file_spec = csv_files['works']
 
     with gzip.open(file_spec['works']['name'], 'wt', encoding='utf-8') as works_csv, \
-            gzip.open(file_spec['host_venues']['name'], 'wt', encoding='utf-8') as host_venues_csv, \
-            gzip.open(file_spec['alternate_host_venues']['name'], 'wt', encoding='utf-8') as alternate_host_venues_csv, \
+            gzip.open(file_spec['primary_locations']['name'], 'wt', encoding='utf-8') as primary_locations_csv, \
+            gzip.open(file_spec['locations']['name'], 'wt', encoding='utf-8') as locations, \
+            gzip.open(file_spec['best_oa_locations']['name'], 'wt', encoding='utf-8') as best_oa_locations, \
             gzip.open(file_spec['authorships']['name'], 'wt', encoding='utf-8') as authorships_csv, \
             gzip.open(file_spec['biblio']['name'], 'wt', encoding='utf-8') as biblio_csv, \
             gzip.open(file_spec['concepts']['name'], 'wt', encoding='utf-8') as concepts_csv, \
@@ -457,8 +464,9 @@ def flatten_works():
             gzip.open(file_spec['related_works']['name'], 'wt', encoding='utf-8') as related_works_csv:
 
         works_writer = init_dict_writer(works_csv, file_spec['works'], extrasaction='ignore')
-        host_venues_writer = init_dict_writer(host_venues_csv, file_spec['host_venues'])
-        alternate_host_venues_writer = init_dict_writer(alternate_host_venues_csv, file_spec['alternate_host_venues'])
+        primary_locations_writer = init_dict_writer(primary_locations_csv, file_spec['primary_locations'])
+        locations_writer = init_dict_writer(locations, file_spec['locations'])
+        best_oa_locations_writer = init_dict_writer(best_oa_locations, file_spec['best_oa_locations'])
         authorships_writer = init_dict_writer(authorships_csv, file_spec['authorships'])
         biblio_writer = init_dict_writer(biblio_csv, file_spec['biblio'])
         concepts_writer = init_dict_writer(concepts_csv, file_spec['concepts'])
@@ -487,30 +495,45 @@ def flatten_works():
 
                     works_writer.writerow(work)
 
-                    # host_venues
-                    if host_venue := (work.get('host_venue') or {}):
-                        if host_venue_id := host_venue.get('id'):
-                            host_venues_writer.writerow({
+                    # primary_locations
+                    if primary_location := (work.get('primary_location') or {}):
+                        if primary_location_id := primary_location.get('id'):
+                            primary_locations_writer.writerow({
                                 'work_id': work_id,
-                                'venue_id': host_venue_id,
-                                'url': host_venue.get('url'),
-                                'is_oa': host_venue.get('is_oa'),
-                                'version': host_venue.get('version'),
-                                'license': host_venue.get('license'),
+                                'source_id': primary_location_id,
+                                'landing_page_url': primary_location.get('landing_page_url'),
+                                'pdf_url': primary_location.get('pdf_url'),
+                                'is_oa': primary_location.get('is_oa'),
+                                'version': primary_location.get('version'),
+                                'license': primary_location.get('license'),
                             })
 
-                    # alternate_host_venues
-                    if alternate_host_venues := work.get('alternate_host_venues'):
-                        for alternate_host_venue in alternate_host_venues:
-                            if venue_id := alternate_host_venue.get('id'):
-                                alternate_host_venues_writer.writerow({
+                    # locations
+                    if locations := work.get('locations'):
+                        for location in locations:
+                            if source_id := location.get('id'):
+                                locations_writer.writerow({
                                     'work_id': work_id,
-                                    'venue_id': venue_id,
-                                    'url': alternate_host_venue.get('url'),
-                                    'is_oa': alternate_host_venue.get('is_oa'),
-                                    'version': alternate_host_venue.get('version'),
-                                    'license': alternate_host_venue.get('license'),
+                                    'source_id': source_id,
+                                    'landing_page_url': location.get('landing_page_url'),
+                                    'pdf_url': location.get('pdf_url'),
+                                    'is_oa': location.get('is_oa'),
+                                    'version': location.get('version'),
+                                    'license': location.get('license'),
                                 })
+
+                    # best_oa_locations
+                    if best_oa_location := (work.get('best_oa_location') or {}):
+                        if best_oa_location_id := best_oa_location.get('id'):
+                            best_oa_locations_writer.writerow({
+                                'work_id': work_id,
+                                'source_id': best_oa_location_id,
+                                'landing_page_url': best_oa_location.get('landing_page_url'),
+                                'pdf_url': best_oa_location.get('pdf_url'),
+                                'is_oa': best_oa_location.get('is_oa'),
+                                'version': best_oa_location.get('version'),
+                                'license': best_oa_location.get('license'),
+                            })
 
                     # authorships
                     if authorships := work.get('authorships'):

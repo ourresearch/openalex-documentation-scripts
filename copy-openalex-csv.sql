@@ -29,8 +29,9 @@
 --works
 
 \copy openalex.works (id, doi, title, display_name, publication_year, publication_date, type, cited_by_count, is_retracted, is_paratext, cited_by_api_url, abstract_inverted_index) from program 'gunzip -c csv-files/works.csv.gz' csv header
-\copy openalex.works_host_venues (work_id, venue_id, url, is_oa, version, license) from program 'gunzip -c csv-files/works_host_venues.csv.gz' csv header
-\copy openalex.works_alternate_host_venues (work_id, venue_id, url, is_oa, version, license) from program 'gunzip -c csv-files/works_alternate_host_venues.csv.gz' csv header
+\copy openalex.works_primary_locations (work_id, source_id, landing_page_url, pdf_url, is_oa, version, license) from program 'gunzip -c csv-files/works_primary_locations.csv.gz' csv header
+\copy openalex.works_locations (work_id, source_id, landing_page_url, pdf_url, is_oa, version, license) from program 'gunzip -c csv-files/works_locations.csv.gz' csv header
+\copy openalex.works_best_oa_locations (work_id, source_id, landing_page_url, pdf_url, is_oa, version, license) from program 'gunzip -c csv-files/works_best_oa_locations.csv.gz' csv header
 \copy openalex.works_authorships (work_id, author_position, author_id, institution_id, raw_affiliation_string) from program 'gunzip -c csv-files/works_authorships.csv.gz' csv header
 \copy openalex.works_biblio (work_id, volume, issue, first_page, last_page) from program 'gunzip -c csv-files/works_biblio.csv.gz' csv header
 \copy openalex.works_concepts (work_id, concept_id, score) from program 'gunzip -c csv-files/works_concepts.csv.gz' csv header

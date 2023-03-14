@@ -278,15 +278,45 @@ CREATE TABLE openalex.works (
     abstract_inverted_index json
 );
 
-
 --
--- Name: works_alternate_host_venues; Type: TABLE; Schema: openalex; Owner: -
+-- Name: works_primary_locations; Type: TABLE; Schema: openalex; Owner: -
 --
 
-CREATE TABLE openalex.works_alternate_host_venues (
+CREATE TABLE openalex.works_primary_locations (
     work_id text,
-    venue_id text,
-    url text,
+    source_id text,
+    landing_page_url text,
+    pdf_url text,
+    is_oa boolean,
+    version text,
+    license text
+);
+
+
+--
+-- Name: works_locations; Type: TABLE; Schema: openalex; Owner: -
+--
+
+CREATE TABLE openalex.works_locations (
+    work_id text,
+    source_id text,
+    landing_page_url text,
+    pdf_url text,
+    is_oa boolean,
+    version text,
+    license text
+);
+
+
+--
+-- Name: works_best_oa_locations; Type: TABLE; Schema: openalex; Owner: -
+--
+
+CREATE TABLE openalex.works_best_oa_locations (
+    work_id text,
+    source_id text,
+    landing_page_url text,
+    pdf_url text,
     is_oa boolean,
     version text,
     license text
@@ -327,20 +357,6 @@ CREATE TABLE openalex.works_concepts (
     work_id text,
     concept_id text,
     score real
-);
-
-
---
--- Name: works_host_venues; Type: TABLE; Schema: openalex; Owner: -
---
-
-CREATE TABLE openalex.works_host_venues (
-    work_id text,
-    venue_id text,
-    url text,
-    is_oa boolean,
-    version text,
-    license text
 );
 
 
@@ -552,19 +568,25 @@ CREATE INDEX concepts_related_concepts_concept_id_idx ON openalex.concepts_relat
 
 CREATE INDEX concepts_related_concepts_related_concept_id_idx ON openalex.concepts_related_concepts USING btree (related_concept_id);
 
-
 --
--- Name: works_alternate_host_venues_work_id_idx; Type: INDEX; Schema: openalex; Owner: -
---
-
-CREATE INDEX works_alternate_host_venues_work_id_idx ON openalex.works_alternate_host_venues USING btree (work_id);
-
-
---
--- Name: works_host_venues_work_id_idx; Type: INDEX; Schema: openalex; Owner: -
+-- Name: works_primary_locations_work_id_idx; Type: INDEX; Schema: openalex; Owner: -
 --
 
-CREATE INDEX works_host_venues_work_id_idx ON openalex.works_host_venues USING btree (work_id);
+CREATE INDEX works_primary_locations_work_id_idx ON openalex.works_primary_locations USING btree (work_id);
+
+
+--
+-- Name: works_locations_work_id_idx; Type: INDEX; Schema: openalex; Owner: -
+--
+
+CREATE INDEX works_locations_work_id_idx ON openalex.works_locations USING btree (work_id);
+
+
+--
+-- Name: works_best_oa_locations_work_id_idx; Type: INDEX; Schema: openalex; Owner: -
+--
+
+CREATE INDEX works_best_oa_locations_work_id_idx ON openalex.works_best_oa_locations USING btree (work_id);
 
 
 --
