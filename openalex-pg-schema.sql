@@ -215,10 +215,10 @@ CREATE TABLE openalex.institutions_ids (
 
 
 --
--- Name: venues; Type: TABLE; Schema: openalex; Owner: -
+-- Name: sources; Type: TABLE; Schema: openalex; Owner: -
 --
 
-CREATE TABLE openalex.venues (
+CREATE TABLE openalex.sources (
     id text NOT NULL,
     issn_l text,
     issn json,
@@ -235,11 +235,11 @@ CREATE TABLE openalex.venues (
 
 
 --
--- Name: venues_counts_by_year; Type: TABLE; Schema: openalex; Owner: -
+-- Name: sources_counts_by_year; Type: TABLE; Schema: openalex; Owner: -
 --
 
-CREATE TABLE openalex.venues_counts_by_year (
-    venue_id text NOT NULL,
+CREATE TABLE openalex.sources_counts_by_year (
+    source_id text NOT NULL,
     year integer NOT NULL,
     works_count integer,
     cited_by_count integer
@@ -247,11 +247,11 @@ CREATE TABLE openalex.venues_counts_by_year (
 
 
 --
--- Name: venues_ids; Type: TABLE; Schema: openalex; Owner: -
+-- Name: sources_ids; Type: TABLE; Schema: openalex; Owner: -
 --
 
-CREATE TABLE openalex.venues_ids (
-    venue_id text,
+CREATE TABLE openalex.sources_ids (
+    source_id text,
     openalex text,
     issn_l text,
     issn json,
@@ -485,19 +485,19 @@ CREATE TABLE openalex.works_related_works (
 --
 --
 ----
----- Name: venues venue_pkey; Type: CONSTRAINT; Schema: openalex; Owner: -
+---- Name: sources source_pkey; Type: CONSTRAINT; Schema: openalex; Owner: -
 ----
 --
---ALTER TABLE ONLY openalex.venues
---    ADD CONSTRAINT venue_pkey PRIMARY KEY (id);
+--ALTER TABLE ONLY openalex.sources
+--    ADD CONSTRAINT source_pkey PRIMARY KEY (id);
 --
 --
 ----
----- Name: venues_counts_by_year venues_counts_by_year_pkey; Type: CONSTRAINT; Schema: openalex; Owner: -
+---- Name: sources_counts_by_year sources_counts_by_year_pkey; Type: CONSTRAINT; Schema: openalex; Owner: -
 ----
 --
---ALTER TABLE ONLY openalex.venues_counts_by_year
---    ADD CONSTRAINT venues_counts_by_year_pkey PRIMARY KEY (venue_id, year);
+--ALTER TABLE ONLY openalex.sources_counts_by_year
+--    ADD CONSTRAINT sources_counts_by_year_pkey PRIMARY KEY (source_id, year);
 --
 --
 ----

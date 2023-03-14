@@ -10,41 +10,6 @@ CSV_DIR = 'csv-files'
 FILES_PER_ENTITY = int(os.environ.get('OPENALEX_DEMO_FILES_PER_ENTITY', '0'))
 
 csv_files = {
-    'institutions': {
-        'institutions': {
-            'name': os.path.join(CSV_DIR, 'institutions.csv.gz'),
-            'columns': [
-                'id', 'ror', 'display_name', 'country_code', 'type', 'homepage_url', 'image_url', 'image_thumbnail_url',
-                'display_name_acroynyms', 'display_name_alternatives', 'works_count', 'cited_by_count', 'works_api_url',
-                'updated_date'
-            ]
-        },
-        'ids': {
-            'name': os.path.join(CSV_DIR, 'institutions_ids.csv.gz'),
-            'columns': [
-                'institution_id', 'openalex', 'ror', 'grid', 'wikipedia', 'wikidata', 'mag'
-            ]
-        },
-        'geo': {
-            'name': os.path.join(CSV_DIR, 'institutions_geo.csv.gz'),
-            'columns': [
-                'institution_id', 'city', 'geonames_city_id', 'region', 'country_code', 'country', 'latitude',
-                'longitude'
-            ]
-        },
-        'associated_institutions': {
-            'name': os.path.join(CSV_DIR, 'institutions_associated_institutions.csv.gz'),
-            'columns': [
-                'institution_id', 'associated_institution_id', 'relationship'
-            ]
-        },
-        'counts_by_year': {
-            'name': os.path.join(CSV_DIR, 'institutions_counts_by_year.csv.gz'),
-            'columns': [
-                'institution_id', 'year', 'works_count', 'cited_by_count'
-            ]
-        }
-    },
     'authors': {
         'authors': {
             'name': os.path.join(CSV_DIR, 'authors.csv.gz'),
@@ -91,21 +56,56 @@ csv_files = {
             'columns': ['concept_id', 'related_concept_id', 'score']
         }
     },
-    'venues': {
-        'venues': {
-            'name': os.path.join(CSV_DIR, 'venues.csv.gz'),
+    'institutions': {
+        'institutions': {
+            'name': os.path.join(CSV_DIR, 'institutions.csv.gz'),
+            'columns': [
+                'id', 'ror', 'display_name', 'country_code', 'type', 'homepage_url', 'image_url', 'image_thumbnail_url',
+                'display_name_acroynyms', 'display_name_alternatives', 'works_count', 'cited_by_count', 'works_api_url',
+                'updated_date'
+            ]
+        },
+        'ids': {
+            'name': os.path.join(CSV_DIR, 'institutions_ids.csv.gz'),
+            'columns': [
+                'institution_id', 'openalex', 'ror', 'grid', 'wikipedia', 'wikidata', 'mag'
+            ]
+        },
+        'geo': {
+            'name': os.path.join(CSV_DIR, 'institutions_geo.csv.gz'),
+            'columns': [
+                'institution_id', 'city', 'geonames_city_id', 'region', 'country_code', 'country', 'latitude',
+                'longitude'
+            ]
+        },
+        'associated_institutions': {
+            'name': os.path.join(CSV_DIR, 'institutions_associated_institutions.csv.gz'),
+            'columns': [
+                'institution_id', 'associated_institution_id', 'relationship'
+            ]
+        },
+        'counts_by_year': {
+            'name': os.path.join(CSV_DIR, 'institutions_counts_by_year.csv.gz'),
+            'columns': [
+                'institution_id', 'year', 'works_count', 'cited_by_count'
+            ]
+        }
+    },
+    'sources': {
+        'sources': {
+            'name': os.path.join(CSV_DIR, 'sources.csv.gz'),
             'columns': [
                 'id', 'issn_l', 'issn', 'display_name', 'publisher', 'works_count', 'cited_by_count', 'is_oa',
                 'is_in_doaj', 'homepage_url', 'works_api_url', 'updated_date'
             ]
         },
         'ids': {
-            'name': os.path.join(CSV_DIR, 'venues_ids.csv.gz'),
-            'columns': ['venue_id', 'openalex', 'issn_l', 'issn', 'mag']
+            'name': os.path.join(CSV_DIR, 'sources_ids.csv.gz'),
+            'columns': ['source_id', 'openalex', 'issn_l', 'issn', 'mag']
         },
         'counts_by_year': {
-            'name': os.path.join(CSV_DIR, 'venues_counts_by_year.csv.gz'),
-            'columns': ['venue_id', 'year', 'works_count', 'cited_by_count']
+            'name': os.path.join(CSV_DIR, 'sources_counts_by_year.csv.gz'),
+            'columns': ['source_id', 'year', 'works_count', 'cited_by_count']
         },
     },
     'works': {
@@ -180,6 +180,57 @@ csv_files = {
 }
 
 
+def flatten_authors():
+    file_spec = csv_files['authors']
+
+    with gzip.open(file_spec['authors']['name'], 'wt', encoding='utf-8') as authors_csv, \
+            gzip.open(file_spec['ids']['name'], 'wt', encoding='utf-8') as ids_csv, \
+            gzip.open(file_spec['counts_by_year']['name'], 'wt', encoding='utf-8') as counts_by_year_csv:
+
+        authors_writer = csv.DictWriter(
+            authors_csv, fieldnames=file_spec['authors']['columns'], extrasaction='ignore'
+        )
+        authors_writer.writeheader()
+
+        ids_writer = csv.DictWriter(ids_csv, fieldnames=file_spec['ids']['columns'])
+        ids_writer.writeheader()
+
+        counts_by_year_writer = csv.DictWriter(counts_by_year_csv, fieldnames=file_spec['counts_by_year']['columns'])
+        counts_by_year_writer.writeheader()
+
+        files_done = 0
+        for jsonl_file_name in glob.glob(os.path.join(SNAPSHOT_DIR, 'data', 'authors', '*', '*.gz')):
+            print(jsonl_file_name)
+            with gzip.open(jsonl_file_name, 'r') as authors_jsonl:
+                for author_json in authors_jsonl:
+                    if not author_json.strip():
+                        continue
+
+                    author = json.loads(author_json)
+
+                    if not (author_id := author.get('id')):
+                        continue
+
+                    # authors
+                    author['display_name_alternatives'] = json.dumps(author.get('display_name_alternatives'), ensure_ascii=False)
+                    author['last_known_institution'] = (author.get('last_known_institution') or {}).get('id')
+                    authors_writer.writerow(author)
+
+                    # ids
+                    if author_ids := author.get('ids'):
+                        author_ids['author_id'] = author_id
+                        ids_writer.writerow(author_ids)
+
+                    # counts_by_year
+                    if counts_by_year := author.get('counts_by_year'):
+                        for count_by_year in counts_by_year:
+                            count_by_year['author_id'] = author_id
+                            counts_by_year_writer.writerow(count_by_year)
+            files_done += 1
+            if FILES_PER_ENTITY and files_done >= FILES_PER_ENTITY:
+                break
+
+
 def flatten_concepts():
     with gzip.open(csv_files['concepts']['concepts']['name'], 'wt', encoding='utf-8') as concepts_csv, \
             gzip.open(csv_files['concepts']['ancestors']['name'], 'wt', encoding='utf-8') as ancestors_csv, \
@@ -250,57 +301,6 @@ def flatten_concepts():
                                     'related_concept_id': related_concept_id,
                                     'score': related_concept.get('score')
                                 })
-
-            files_done += 1
-            if FILES_PER_ENTITY and files_done >= FILES_PER_ENTITY:
-                break
-
-
-def flatten_venues():
-    with gzip.open(csv_files['venues']['venues']['name'], 'wt', encoding='utf-8') as venues_csv, \
-            gzip.open(csv_files['venues']['ids']['name'], 'wt', encoding='utf-8') as ids_csv, \
-            gzip.open(csv_files['venues']['counts_by_year']['name'], 'wt', encoding='utf-8') as counts_by_year_csv:
-
-        venues_writer = csv.DictWriter(
-            venues_csv, fieldnames=csv_files['venues']['venues']['columns'], extrasaction='ignore'
-        )
-        venues_writer.writeheader()
-
-        ids_writer = csv.DictWriter(ids_csv, fieldnames=csv_files['venues']['ids']['columns'])
-        ids_writer.writeheader()
-
-        counts_by_year_writer = csv.DictWriter(counts_by_year_csv, fieldnames=csv_files['venues']['counts_by_year']['columns'])
-        counts_by_year_writer.writeheader()
-
-        seen_venue_ids = set()
-
-        files_done = 0
-        for jsonl_file_name in glob.glob(os.path.join(SNAPSHOT_DIR, 'data', 'venues', '*', '*.gz')):
-            print(jsonl_file_name)
-            with gzip.open(jsonl_file_name, 'r') as venues_jsonl:
-                for venue_json in venues_jsonl:
-                    if not venue_json.strip():
-                        continue
-
-                    venue = json.loads(venue_json)
-
-                    if not (venue_id := venue.get('id')) or venue_id in seen_venue_ids:
-                        continue
-
-                    seen_venue_ids.add(venue_id)
-
-                    venue['issn'] = json.dumps(venue.get('issn'))
-                    venues_writer.writerow(venue)
-
-                    if venue_ids := venue.get('ids'):
-                        venue_ids['venue_id'] = venue_id
-                        venue_ids['issn'] = json.dumps(venue_ids.get('issn'))
-                        ids_writer.writerow(venue_ids)
-
-                    if counts_by_year := venue.get('counts_by_year'):
-                        for count_by_year in counts_by_year:
-                            count_by_year['venue_id'] = venue_id
-                            counts_by_year_writer.writerow(count_by_year)
 
             files_done += 1
             if FILES_PER_ENTITY and files_done >= FILES_PER_ENTITY:
@@ -390,56 +390,55 @@ def flatten_institutions():
                 break
 
 
-def flatten_authors():
-    file_spec = csv_files['authors']
+def flatten_sources():
+    with gzip.open(csv_files['sources']['sources']['name'], 'wt', encoding='utf-8') as sources_csv, \
+            gzip.open(csv_files['sources']['ids']['name'], 'wt', encoding='utf-8') as ids_csv, \
+            gzip.open(csv_files['sources']['counts_by_year']['name'], 'wt', encoding='utf-8') as counts_by_year_csv:
 
-    with gzip.open(file_spec['authors']['name'], 'wt', encoding='utf-8') as authors_csv, \
-            gzip.open(file_spec['ids']['name'], 'wt', encoding='utf-8') as ids_csv, \
-            gzip.open(file_spec['counts_by_year']['name'], 'wt', encoding='utf-8') as counts_by_year_csv:
-
-        authors_writer = csv.DictWriter(
-            authors_csv, fieldnames=file_spec['authors']['columns'], extrasaction='ignore'
+        sources_writer = csv.DictWriter(
+            sources_csv, fieldnames=csv_files['sources']['sources']['columns'], extrasaction='ignore'
         )
-        authors_writer.writeheader()
+        sources_writer.writeheader()
 
-        ids_writer = csv.DictWriter(ids_csv, fieldnames=file_spec['ids']['columns'])
+        ids_writer = csv.DictWriter(ids_csv, fieldnames=csv_files['sources']['ids']['columns'])
         ids_writer.writeheader()
 
-        counts_by_year_writer = csv.DictWriter(counts_by_year_csv, fieldnames=file_spec['counts_by_year']['columns'])
+        counts_by_year_writer = csv.DictWriter(counts_by_year_csv, fieldnames=csv_files['sources']['counts_by_year']['columns'])
         counts_by_year_writer.writeheader()
 
+        seen_source_ids = set()
+
         files_done = 0
-        for jsonl_file_name in glob.glob(os.path.join(SNAPSHOT_DIR, 'data', 'authors', '*', '*.gz')):
+        for jsonl_file_name in glob.glob(os.path.join(SNAPSHOT_DIR, 'data', 'sources', '*', '*.gz')):
             print(jsonl_file_name)
-            with gzip.open(jsonl_file_name, 'r') as authors_jsonl:
-                for author_json in authors_jsonl:
-                    if not author_json.strip():
+            with gzip.open(jsonl_file_name, 'r') as sources_jsonl:
+                for source_json in sources_jsonl:
+                    if not source_json.strip():
                         continue
 
-                    author = json.loads(author_json)
+                    source = json.loads(source_json)
 
-                    if not (author_id := author.get('id')):
+                    if not (source_id := source.get('id')) or source_id in seen_source_ids:
                         continue
 
-                    # authors
-                    author['display_name_alternatives'] = json.dumps(author.get('display_name_alternatives'), ensure_ascii=False)
-                    author['last_known_institution'] = (author.get('last_known_institution') or {}).get('id')
-                    authors_writer.writerow(author)
+                    seen_source_ids.add(source_id)
 
-                    # ids
-                    if author_ids := author.get('ids'):
-                        author_ids['author_id'] = author_id
-                        ids_writer.writerow(author_ids)
+                    source['issn'] = json.dumps(source.get('issn'))
+                    sources_writer.writerow(source)
 
-                    # counts_by_year
-                    if counts_by_year := author.get('counts_by_year'):
+                    if source_ids := source.get('ids'):
+                        source_ids['source_id'] = source_id
+                        source_ids['issn'] = json.dumps(source_ids.get('issn'))
+                        ids_writer.writerow(source_ids)
+
+                    if counts_by_year := source.get('counts_by_year'):
                         for count_by_year in counts_by_year:
-                            count_by_year['author_id'] = author_id
+                            count_by_year['source_id'] = source_id
                             counts_by_year_writer.writerow(count_by_year)
+
             files_done += 1
             if FILES_PER_ENTITY and files_done >= FILES_PER_ENTITY:
                 break
-
 
 
 def flatten_works():
@@ -590,9 +589,9 @@ def init_dict_writer(csv_file, file_spec, **kwargs):
 
 
 if __name__ == '__main__':
-    flatten_concepts()
-    flatten_venues()
-    flatten_institutions()
     flatten_authors()
+    flatten_concepts()
+    flatten_institutions()
+    flatten_sources()
     flatten_works()
 
