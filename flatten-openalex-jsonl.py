@@ -91,6 +91,31 @@ csv_files = {
             ]
         }
     },
+    'publishers': {
+        'publishers': {
+            'name': os.path.join(CSV_DIR, 'publishers.csv.gz'),
+            'columns': [
+                'id', 'display_name', 'hierarchy_level', 'parent_publisher',
+                'works_count', 'cited_by_count', 'sources_api_url', 'updated_date'
+            ]
+        },
+        'alternate_titles': {
+            'name': os.path.join(CSV_DIR, 'publishers_alternate_titles.csv.gz'),
+            'columns': ['publisher_id', 'alternate_title']
+        },
+        'country_codes': {
+            'name': os.path.join(CSV_DIR, 'publishers_country_codes.csv.gz'),
+            'columns': ['publisher_id', 'country_code']
+        },
+        'counts_by_year': {
+            'name': os.path.join(CSV_DIR, 'publishers_counts_by_year.csv.gz'),
+            'columns': ['publisher_id', 'year', 'works_count', 'cited_by_count']
+        },
+        'ids': {
+            'name': os.path.join(CSV_DIR, 'publishers_ids.csv.gz'),
+            'columns': ['publisher_id', 'openalex', 'ror', 'wikidata']
+        },
+    },
     'sources': {
         'sources': {
             'name': os.path.join(CSV_DIR, 'sources.csv.gz'),
@@ -363,7 +388,7 @@ def flatten_institutions():
                     institution['display_name_alternatives'] = json.dumps(institution.get('display_name_alternatives'), ensure_ascii=False)
                     institutions_writer.writerow(institution)
 
-                    # idss
+                    # ids
                     if institution_ids := institution.get('ids'):
                         institution_ids['institution_id'] = institution_id
                         ids_writer.writerow(institution_ids)
@@ -389,6 +414,75 @@ def flatten_institutions():
                     if counts_by_year := institution.get('counts_by_year'):
                         for count_by_year in counts_by_year:
                             count_by_year['institution_id'] = institution_id
+                            counts_by_year_writer.writerow(count_by_year)
+
+            files_done += 1
+            if FILES_PER_ENTITY and files_done >= FILES_PER_ENTITY:
+                break
+
+
+def flatten_publishers():
+    with gzip.open(csv_files['publishers']['publishers']['name'], 'wt', encoding='utf-8') as publishers_csv, \
+            gzip.open(csv_files['publishers']['alternate_titles']['name'], 'wt', encoding='utf-8') as alternate_titles_csv, \
+            gzip.open(csv_files['publishers']['country_codes']['name'], 'wt', encoding='utf-8') as country_codes_csv, \
+            gzip.open(csv_files['publishers']['counts_by_year']['name'], 'wt', encoding='utf-8') as counts_by_year_csv, \
+            gzip.open(csv_files['publishers']['ids']['name'], 'wt', encoding='utf-8') as ids_csv:
+
+        publishers_writer = csv.DictWriter(
+            publishers_csv, fieldnames=csv_files['publishers']['publishers']['columns'], extrasaction='ignore'
+        )
+        publishers_writer.writeheader()
+
+        alternate_titles_writer = csv.DictWriter(alternate_titles_csv,
+                                               fieldnames=csv_files['publishers']['alternate_titles']['columns'])
+        alternate_titles_writer.writeheader()
+
+        country_codes_writer = csv.DictWriter(country_codes_csv,
+                                                 fieldnames=csv_files['publishers']['country_codes']['columns'])
+        country_codes_writer.writeheader()
+
+        counts_by_year_writer = csv.DictWriter(counts_by_year_csv, fieldnames=csv_files['publishers']['counts_by_year']['columns'])
+        counts_by_year_writer.writeheader()
+
+        ids_writer = csv.DictWriter(ids_csv, fieldnames=csv_files['publishers']['ids']['columns'])
+        ids_writer.writeheader()
+
+        seen_publisher_ids = set()
+
+        files_done = 0
+        for jsonl_file_name in glob.glob(os.path.join(SNAPSHOT_DIR, 'data', 'publishers', '*', '*.gz')):
+            print(jsonl_file_name)
+            with gzip.open(jsonl_file_name, 'r') as concepts_jsonl:
+                for publisher_json in concepts_jsonl:
+                    if not publisher_json.strip():
+                        continue
+
+                    publisher = json.loads(publisher_json)
+
+                    if not (publisher_id := publisher.get('id')) or publisher_id in seen_publisher_ids:
+                        continue
+
+                    seen_publisher_ids.add(publisher_id)
+
+                    publishers_writer.writerow(publisher)
+
+                    if publisher_ids := publisher.get('ids'):
+                        publisher_ids['publisher_id'] = publisher_id
+                        ids_writer.writerow(publisher_ids)
+
+                    if alternate_titles := publisher.get('alternate_titles'):
+                        for title in alternate_titles:
+                            alternate_titles['publisher_id'] = publisher_id
+                            alternate_titles_writer.writerow(title)
+
+                    if country_codes := publisher.get('country_codes'):
+                        for country_code in country_codes:
+                            country_codes['publisher_id'] = publisher_id
+                            country_codes_writer.writerow(country_code)
+
+                    if counts_by_year := publisher.get('counts_by_year'):
+                        for count_by_year in counts_by_year:
+                            count_by_year['publisher_id'] = publisher_id
                             counts_by_year_writer.writerow(count_by_year)
 
             files_done += 1
@@ -615,6 +709,7 @@ if __name__ == '__main__':
     flatten_authors()
     flatten_concepts()
     flatten_institutions()
+    flatten_publishers()
     flatten_sources()
     flatten_works()
 

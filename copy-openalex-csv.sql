@@ -20,6 +20,14 @@
 \copy openalex.institutions_associated_institutions (institution_id, associated_institution_id, relationship) from program 'gunzip -c csv-files/institutions_associated_institutions.csv.gz' csv header
 \copy openalex.institutions_counts_by_year (institution_id, year, works_count, cited_by_count) from program 'gunzip -c csv-files/institutions_counts_by_year.csv.gz' csv header
 
+--publishers
+
+\copy openalex.publishers (id, display_name, hierarchy_level, parent_publisher, works_count, cited_by_count, sources_api_url, updated_date) from program 'gunzip -c csv-files/publishers.csv.gz' csv header
+\copy openalex.publishers_alternate_titles (publisher_id, alternate_title) from program 'gunzip -c csv-files/publishers_alternate_titles.csv.gz' csv header
+\copy openalex.publishers_country_codes (publisher_id, country_code) from program 'gunzip -c csv-files/publishers_country_codes.csv.gz' csv header
+\copy openalex.publishers_ids (publisher_id, openalex, ror, wikidata) from program 'gunzip -c csv-files/publishers_ids.csv.gz' csv header
+\copy openalex.publishers_counts_by_year (publisher_id, year, works_count, cited_by_count) from program 'gunzip -c csv-files/publishers_counts_by_year.csv.gz' csv header
+
 --sources
 
 \copy openalex.sources (id, issn_l, issn, display_name, publisher, works_count, cited_by_count, is_oa, is_in_doaj, homepage_url, works_api_url, updated_date) from program 'gunzip -c csv-files/sources.csv.gz' csv header
