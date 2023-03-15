@@ -221,32 +221,14 @@ CREATE TABLE openalex.institutions_ids (
 CREATE TABLE openalex.publishers (
     id text NOT NULL,
     display_name text,
+    alternate_titles json,
+    country_codes json,
     hierarchy_level integer,
     parent_publisher text,
     works_count integer,
     cited_by_count integer,
     sources_api_url text,
     updated_date timestamp without time zone
-);
-
-
---
--- Name: publishers_alternate_titles; Type: TABLE; Schema: openalex; Owner: -
---
-
-CREATE TABLE openalex.publishers_alternate_titles (
-    publisher_id text NOT NULL,
-    alternate_title text NOT NULL
-);
-
-
---
--- Name: publishers_country_codes; Type: TABLE; Schema: openalex; Owner: -
---
-
-CREATE TABLE openalex.publishers_country_codes (
-    publisher_id text NOT NULL,
-    country_code text NOT NULL
 );
 
 
@@ -270,7 +252,7 @@ CREATE TABLE openalex.publishers_ids (
     publisher_id text,
     openalex text,
     ror text,
-    wikidata json
+    wikidata text
 );
 
 

@@ -22,9 +22,7 @@
 
 --publishers
 
-\copy openalex.publishers (id, display_name, hierarchy_level, parent_publisher, works_count, cited_by_count, sources_api_url, updated_date) from program 'gunzip -c csv-files/publishers.csv.gz' csv header
-\copy openalex.publishers_alternate_titles (publisher_id, alternate_title) from program 'gunzip -c csv-files/publishers_alternate_titles.csv.gz' csv header
-\copy openalex.publishers_country_codes (publisher_id, country_code) from program 'gunzip -c csv-files/publishers_country_codes.csv.gz' csv header
+\copy openalex.publishers (id, display_name, alternate_titles, country_codes, hierarchy_level, parent_publisher, works_count, cited_by_count, sources_api_url, updated_date) from program 'gunzip -c csv-files/publishers.csv.gz' csv header
 \copy openalex.publishers_ids (publisher_id, openalex, ror, wikidata) from program 'gunzip -c csv-files/publishers_ids.csv.gz' csv header
 \copy openalex.publishers_counts_by_year (publisher_id, year, works_count, cited_by_count) from program 'gunzip -c csv-files/publishers_counts_by_year.csv.gz' csv header
 

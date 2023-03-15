@@ -95,17 +95,9 @@ csv_files = {
         'publishers': {
             'name': os.path.join(CSV_DIR, 'publishers.csv.gz'),
             'columns': [
-                'id', 'display_name', 'hierarchy_level', 'parent_publisher',
+                'id', 'display_name', 'alternate_titles', 'country_codes', 'hierarchy_level', 'parent_publisher',
                 'works_count', 'cited_by_count', 'sources_api_url', 'updated_date'
             ]
-        },
-        'alternate_titles': {
-            'name': os.path.join(CSV_DIR, 'publishers_alternate_titles.csv.gz'),
-            'columns': ['publisher_id', 'alternate_title']
-        },
-        'country_codes': {
-            'name': os.path.join(CSV_DIR, 'publishers_country_codes.csv.gz'),
-            'columns': ['publisher_id', 'country_code']
         },
         'counts_by_year': {
             'name': os.path.join(CSV_DIR, 'publishers_counts_by_year.csv.gz'),
@@ -423,8 +415,6 @@ def flatten_institutions():
 
 def flatten_publishers():
     with gzip.open(csv_files['publishers']['publishers']['name'], 'wt', encoding='utf-8') as publishers_csv, \
-            gzip.open(csv_files['publishers']['alternate_titles']['name'], 'wt', encoding='utf-8') as alternate_titles_csv, \
-            gzip.open(csv_files['publishers']['country_codes']['name'], 'wt', encoding='utf-8') as country_codes_csv, \
             gzip.open(csv_files['publishers']['counts_by_year']['name'], 'wt', encoding='utf-8') as counts_by_year_csv, \
             gzip.open(csv_files['publishers']['ids']['name'], 'wt', encoding='utf-8') as ids_csv:
 
@@ -432,14 +422,6 @@ def flatten_publishers():
             publishers_csv, fieldnames=csv_files['publishers']['publishers']['columns'], extrasaction='ignore'
         )
         publishers_writer.writeheader()
-
-        alternate_titles_writer = csv.DictWriter(alternate_titles_csv,
-                                               fieldnames=csv_files['publishers']['alternate_titles']['columns'])
-        alternate_titles_writer.writeheader()
-
-        country_codes_writer = csv.DictWriter(country_codes_csv,
-                                                 fieldnames=csv_files['publishers']['country_codes']['columns'])
-        country_codes_writer.writeheader()
 
         counts_by_year_writer = csv.DictWriter(counts_by_year_csv, fieldnames=csv_files['publishers']['counts_by_year']['columns'])
         counts_by_year_writer.writeheader()
@@ -464,21 +446,14 @@ def flatten_publishers():
 
                     seen_publisher_ids.add(publisher_id)
 
+                    # publishers
+                    publisher['alternate_titles'] = json.dumps(publisher.get('alternate_titles'), ensure_ascii=False)
+                    publisher['country_codes'] = json.dumps(publisher.get('country_codes'), ensure_ascii=False)
                     publishers_writer.writerow(publisher)
 
                     if publisher_ids := publisher.get('ids'):
                         publisher_ids['publisher_id'] = publisher_id
                         ids_writer.writerow(publisher_ids)
-
-                    if alternate_titles := publisher.get('alternate_titles'):
-                        for title in alternate_titles:
-                            alternate_titles['publisher_id'] = publisher_id
-                            alternate_titles_writer.writerow(title)
-
-                    if country_codes := publisher.get('country_codes'):
-                        for country_code in country_codes:
-                            country_codes['publisher_id'] = publisher_id
-                            country_codes_writer.writerow(country_code)
 
                     if counts_by_year := publisher.get('counts_by_year'):
                         for count_by_year in counts_by_year:
