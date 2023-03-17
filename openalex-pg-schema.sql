@@ -297,7 +297,9 @@ CREATE TABLE openalex.sources_ids (
     openalex text,
     issn_l text,
     issn json,
-    mag bigint
+    mag bigint,
+    wikidata text,
+    fatcat text
 );
 
 

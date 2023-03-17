@@ -29,7 +29,7 @@
 --sources
 
 \copy openalex.sources (id, issn_l, issn, display_name, publisher, works_count, cited_by_count, is_oa, is_in_doaj, homepage_url, works_api_url, updated_date) from program 'gunzip -c csv-files/sources.csv.gz' csv header
-\copy openalex.sources_ids (source_id, openalex, issn_l, issn, mag) from program 'gunzip -c csv-files/sources_ids.csv.gz' csv header
+\copy openalex.sources_ids (source_id, openalex, issn_l, issn, mag, wikidata, fatcat) from program 'gunzip -c csv-files/sources_ids.csv.gz' csv header
 \copy openalex.sources_counts_by_year (source_id, year, works_count, cited_by_count) from program 'gunzip -c csv-files/sources_counts_by_year.csv.gz' csv header
 
 --works

@@ -118,7 +118,7 @@ csv_files = {
         },
         'ids': {
             'name': os.path.join(CSV_DIR, 'sources_ids.csv.gz'),
-            'columns': ['source_id', 'openalex', 'issn_l', 'issn', 'mag']
+            'columns': ['source_id', 'openalex', 'issn_l', 'issn', 'mag', 'wikidata', 'fatcat']
         },
         'counts_by_year': {
             'name': os.path.join(CSV_DIR, 'sources_counts_by_year.csv.gz'),
@@ -687,4 +687,3 @@ if __name__ == '__main__':
     flatten_publishers()
     flatten_sources()
     flatten_works()
-
