@@ -145,7 +145,7 @@ csv_files = {
                 'work_id', 'source_id', 'is_oa', 'landing_page_url', 'pdf_url', 'version', 'license'
             ]
         },
-        'best_oa_location': {
+        'best_oa_locations': {
             'name': os.path.join(CSV_DIR, 'works_best_oa_locations.csv.gz'),
             'columns': [
                 'work_id', 'source_id', 'is_oa', 'landing_page_url', 'pdf_url', 'version', 'license'
@@ -681,9 +681,9 @@ def init_dict_writer(csv_file, file_spec, **kwargs):
 
 
 if __name__ == '__main__':
-    flatten_authors()
-    flatten_concepts()
-    flatten_institutions()
-    flatten_publishers()
-    flatten_sources()
+    # flatten_authors()
+    # flatten_concepts()
+    # flatten_institutions()
+    # flatten_publishers()
+    # flatten_sources()
     flatten_works()
