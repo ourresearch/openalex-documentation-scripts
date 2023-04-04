@@ -566,10 +566,10 @@ def flatten_works():
 
                     # primary_locations
                     if primary_location := (work.get('primary_location') or {}):
-                        if primary_location_id := primary_location.get('id'):
+                        if primary_location.get('source') and primary_location.get('source').get('id'):
                             primary_locations_writer.writerow({
                                 'work_id': work_id,
-                                'source_id': primary_location_id,
+                                'source_id': primary_location['source']['id'],
                                 'landing_page_url': primary_location.get('landing_page_url'),
                                 'pdf_url': primary_location.get('pdf_url'),
                                 'is_oa': primary_location.get('is_oa'),
@@ -580,10 +580,10 @@ def flatten_works():
                     # locations
                     if locations := work.get('locations'):
                         for location in locations:
-                            if source_id := location.get('id'):
+                            if location.get('source') and location.get('source').get('id'):
                                 locations_writer.writerow({
                                     'work_id': work_id,
-                                    'source_id': source_id,
+                                    'source_id': location['source']['id'],
                                     'landing_page_url': location.get('landing_page_url'),
                                     'pdf_url': location.get('pdf_url'),
                                     'is_oa': location.get('is_oa'),
@@ -593,10 +593,10 @@ def flatten_works():
 
                     # best_oa_locations
                     if best_oa_location := (work.get('best_oa_location') or {}):
-                        if best_oa_location_id := best_oa_location.get('id'):
+                        if best_oa_location.get('source') and best_oa_location.get('source').get('id'):
                             best_oa_locations_writer.writerow({
                                 'work_id': work_id,
-                                'source_id': best_oa_location_id,
+                                'source_id': best_oa_location['source']['id'],
                                 'landing_page_url': best_oa_location.get('landing_page_url'),
                                 'pdf_url': best_oa_location.get('pdf_url'),
                                 'is_oa': best_oa_location.get('is_oa'),
@@ -681,9 +681,9 @@ def init_dict_writer(csv_file, file_spec, **kwargs):
 
 
 if __name__ == '__main__':
-    # flatten_authors()
-    # flatten_concepts()
-    # flatten_institutions()
-    # flatten_publishers()
-    # flatten_sources()
+    flatten_authors()
+    flatten_concepts()
+    flatten_institutions()
+    flatten_publishers()
+    flatten_sources()
     flatten_works()
