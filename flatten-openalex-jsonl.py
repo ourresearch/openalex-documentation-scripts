@@ -136,19 +136,19 @@ csv_files = {
         'primary_locations': {
             'name': os.path.join(CSV_DIR, 'works_primary_locations.csv.gz'),
             'columns': [
-                'work_id', 'source_id', 'is_oa', 'landing_page_url', 'pdf_url', 'version', 'license'
+                'work_id', 'source_id', 'landing_page_url', 'pdf_url', 'is_oa', 'version', 'license'
             ]
         },
         'locations': {
             'name': os.path.join(CSV_DIR, 'works_locations.csv.gz'),
             'columns': [
-                'work_id', 'source_id', 'is_oa', 'landing_page_url', 'pdf_url', 'version', 'license'
+                'work_id', 'source_id', 'landing_page_url', 'pdf_url', 'is_oa', 'version', 'license'
             ]
         },
         'best_oa_locations': {
             'name': os.path.join(CSV_DIR, 'works_best_oa_locations.csv.gz'),
             'columns': [
-                'work_id', 'source_id', 'is_oa', 'landing_page_url', 'pdf_url', 'version', 'license'
+                'work_id', 'source_id', 'landing_page_url', 'pdf_url', 'is_oa', 'version', 'license'
             ]
         },
         'authorships': {
