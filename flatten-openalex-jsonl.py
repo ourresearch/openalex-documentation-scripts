@@ -15,7 +15,7 @@ csv_files = {
             'name': os.path.join(CSV_DIR, 'authors.csv.gz'),
             'columns': [
                 'id', 'orcid', 'display_name', 'display_name_alternatives', 'works_count', 'cited_by_count',
-                'last_known_institution', 'works_api_url', 'updated_date'
+                'last_known_institution', 'works_api_url', 'updated_date',
             ]
         },
         'ids': {
@@ -27,7 +27,7 @@ csv_files = {
         'counts_by_year': {
             'name': os.path.join(CSV_DIR, 'authors_counts_by_year.csv.gz'),
             'columns': [
-                'author_id', 'year', 'works_count', 'cited_by_count'
+                'author_id', 'year', 'works_count', 'cited_by_count', 'oa_works_count'
             ]
         }
     },
@@ -45,7 +45,7 @@ csv_files = {
         },
         'counts_by_year': {
             'name': os.path.join(CSV_DIR, 'concepts_counts_by_year.csv.gz'),
-            'columns': ['concept_id', 'year', 'works_count', 'cited_by_count']
+            'columns': ['concept_id', 'year', 'works_count', 'cited_by_count', 'oa_works_count']
         },
         'ids': {
             'name': os.path.join(CSV_DIR, 'concepts_ids.csv.gz'),
@@ -87,7 +87,7 @@ csv_files = {
         'counts_by_year': {
             'name': os.path.join(CSV_DIR, 'institutions_counts_by_year.csv.gz'),
             'columns': [
-                'institution_id', 'year', 'works_count', 'cited_by_count'
+                'institution_id', 'year', 'works_count', 'cited_by_count', 'oa_works_count'
             ]
         }
     },
@@ -101,7 +101,7 @@ csv_files = {
         },
         'counts_by_year': {
             'name': os.path.join(CSV_DIR, 'publishers_counts_by_year.csv.gz'),
-            'columns': ['publisher_id', 'year', 'works_count', 'cited_by_count']
+            'columns': ['publisher_id', 'year', 'works_count', 'cited_by_count', 'oa_works_count']
         },
         'ids': {
             'name': os.path.join(CSV_DIR, 'publishers_ids.csv.gz'),
@@ -122,7 +122,7 @@ csv_files = {
         },
         'counts_by_year': {
             'name': os.path.join(CSV_DIR, 'sources_counts_by_year.csv.gz'),
-            'columns': ['source_id', 'year', 'works_count', 'cited_by_count']
+            'columns': ['source_id', 'year', 'works_count', 'cited_by_count', 'oa_works_count']
         },
     },
     'works': {
@@ -184,7 +184,7 @@ csv_files = {
         'open_access': {
             'name': os.path.join(CSV_DIR, 'works_open_access.csv.gz'),
             'columns': [
-                'work_id', 'is_oa', 'oa_status', 'oa_url'
+                'work_id', 'is_oa', 'oa_status', 'oa_url', 'any_repository_has_fulltext'
             ]
         },
         'referenced_works': {

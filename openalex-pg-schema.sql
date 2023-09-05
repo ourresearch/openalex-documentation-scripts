@@ -52,7 +52,8 @@ CREATE TABLE openalex.authors_counts_by_year (
     author_id text NOT NULL,
     year integer NOT NULL,
     works_count integer,
-    cited_by_count integer
+    cited_by_count integer,
+    oa_works_count integer
 );
 
 
@@ -108,7 +109,8 @@ CREATE TABLE openalex.concepts_counts_by_year (
     concept_id text NOT NULL,
     year integer NOT NULL,
     works_count integer,
-    cited_by_count integer
+    cited_by_count integer,
+    oa_works_count integer
 );
 
 
@@ -179,7 +181,8 @@ CREATE TABLE openalex.institutions_counts_by_year (
     institution_id text NOT NULL,
     year integer NOT NULL,
     works_count integer,
-    cited_by_count integer
+    cited_by_count integer,
+    oa_works_count integer
 );
 
 
@@ -240,7 +243,8 @@ CREATE TABLE openalex.publishers_counts_by_year (
     publisher_id text NOT NULL,
     year integer NOT NULL,
     works_count integer,
-    cited_by_count integer
+    cited_by_count integer,
+    oa_works_count integer
 );
 
 
@@ -284,7 +288,8 @@ CREATE TABLE openalex.sources_counts_by_year (
     source_id text NOT NULL,
     year integer NOT NULL,
     works_count integer,
-    cited_by_count integer
+    cited_by_count integer,
+    oa_works_count integer
 );
 
 
@@ -440,7 +445,8 @@ CREATE TABLE openalex.works_open_access (
     work_id text NOT NULL,
     is_oa boolean,
     oa_status text,
-    oa_url text
+    oa_url text,
+    any_repository_has_fulltext boolean
 );
 
 
