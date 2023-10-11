@@ -153,7 +153,7 @@ CREATE TABLE openalex.institutions (
     homepage_url text,
     image_url text,
     image_thumbnail_url text,
-    display_name_acroynyms json,
+    display_name_acronyms json,
     display_name_alternatives json,
     works_count integer,
     cited_by_count integer,

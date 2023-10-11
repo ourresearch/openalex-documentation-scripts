@@ -61,7 +61,7 @@ csv_files = {
             'name': os.path.join(CSV_DIR, 'institutions.csv.gz'),
             'columns': [
                 'id', 'ror', 'display_name', 'country_code', 'type', 'homepage_url', 'image_url', 'image_thumbnail_url',
-                'display_name_acroynyms', 'display_name_alternatives', 'works_count', 'cited_by_count', 'works_api_url',
+                'display_name_acronyms', 'display_name_alternatives', 'works_count', 'cited_by_count', 'works_api_url',
                 'updated_date'
             ]
         },
@@ -376,7 +376,7 @@ def flatten_institutions():
                     seen_institution_ids.add(institution_id)
 
                     # institutions
-                    institution['display_name_acroynyms'] = json.dumps(institution.get('display_name_acroynyms'), ensure_ascii=False)
+                    institution['display_name_acronyms'] = json.dumps(institution.get('display_name_acronyms'), ensure_ascii=False)
                     institution['display_name_alternatives'] = json.dumps(institution.get('display_name_alternatives'), ensure_ascii=False)
                     institutions_writer.writerow(institution)
 

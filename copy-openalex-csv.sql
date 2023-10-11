@@ -14,7 +14,7 @@
 
 --institutions
 
-\copy openalex.institutions (id, ror, display_name, country_code, type, homepage_url, image_url, image_thumbnail_url, display_name_acroynyms, display_name_alternatives, works_count, cited_by_count, works_api_url, updated_date) from program 'gunzip -c csv-files/institutions.csv.gz' csv header
+\copy openalex.institutions (id, ror, display_name, country_code, type, homepage_url, image_url, image_thumbnail_url, display_name_acronyms, display_name_alternatives, works_count, cited_by_count, works_api_url, updated_date) from program 'gunzip -c csv-files/institutions.csv.gz' csv header
 \copy openalex.institutions_ids (institution_id, openalex, ror, grid, wikipedia, wikidata, mag) from program 'gunzip -c csv-files/institutions_ids.csv.gz' csv header
 \copy openalex.institutions_geo (institution_id, city, geonames_city_id, region, country_code, country, latitude, longitude) from program 'gunzip -c csv-files/institutions_geo.csv.gz' csv header
 \copy openalex.institutions_associated_institutions (institution_id, associated_institution_id, relationship) from program 'gunzip -c csv-files/institutions_associated_institutions.csv.gz' csv header
