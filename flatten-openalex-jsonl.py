@@ -381,32 +381,37 @@ def flatten_institutions():
 
                     institution = json.loads(institution_json)
 
-                    if not (institution_id := institution.get('id')) or institution_id in seen_institution_ids:
+                    institution_id = institution.get('id')
+                    if not institution_id or institution_id in seen_institution_ids:
                         continue
 
                     seen_institution_ids.add(institution_id)
 
                     # institutions
-                    institution['display_name_acronyms'] = json.dumps(institution.get('display_name_acronyms'), ensure_ascii=False)
-                    institution['display_name_alternatives'] = json.dumps(institution.get('display_name_alternatives'), ensure_ascii=False)
+                    display_name_acronyms = institution.get('display_name_acronyms')
+                    institution['display_name_acronyms'] = json.dumps(display_name_acronyms, ensure_ascii=False) if display_name_acronyms else None
+                    display_name_alternatives = institution.get('display_name_alternatives')
+                    institution['display_name_alternatives'] = json.dumps(display_name_alternatives, ensure_ascii=False) if display_name_alternatives else None
                     institutions_writer.writerow(institution)
 
                     # ids
-                    if institution_ids := institution.get('ids'):
+                    institution_ids = institution.get('ids')
+                    if institution_ids:
                         institution_ids['institution_id'] = institution_id
                         ids_writer.writerow(institution_ids)
 
                     # geo
-                    if institution_geo := institution.get('geo'):
+                    institution_geo = institution.get('geo')
+                    if institution_geo:
                         institution_geo['institution_id'] = institution_id
                         geo_writer.writerow(institution_geo)
 
                     # associated_institutions
-                    if associated_institutions := institution.get(
-                        'associated_institutions', institution.get('associated_institutions')  # typo in api
-                    ):
+                    associated_institutions = institution.get('associated_institutions', institution.get('associated_institutions'))  # typo in api
+                    if associated_institutions:
                         for associated_institution in associated_institutions:
-                            if associated_institution_id := associated_institution.get('id'):
+                            associated_institution_id = associated_institution.get('id')
+                            if associated_institution_id:
                                 associated_institutions_writer.writerow({
                                     'institution_id': institution_id,
                                     'associated_institution_id': associated_institution_id,
@@ -414,7 +419,8 @@ def flatten_institutions():
                                 })
 
                     # counts_by_year
-                    if counts_by_year := institution.get('counts_by_year'):
+                    counts_by_year = institution.get('counts_by_year')
+                    if counts_by_year:
                         for count_by_year in counts_by_year:
                             count_by_year['institution_id'] = institution_id
                             counts_by_year_writer.writerow(count_by_year)
