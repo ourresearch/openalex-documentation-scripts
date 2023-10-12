@@ -458,21 +458,28 @@ def flatten_publishers():
 
                     publisher = json.loads(publisher_json)
 
-                    if not (publisher_id := publisher.get('id')) or publisher_id in seen_publisher_ids:
+                    publisher_id = publisher.get('id')
+                    if not publisher_id or publisher_id in seen_publisher_ids:
                         continue
 
                     seen_publisher_ids.add(publisher_id)
 
                     # publishers
-                    publisher['alternate_titles'] = json.dumps(publisher.get('alternate_titles'), ensure_ascii=False)
-                    publisher['country_codes'] = json.dumps(publisher.get('country_codes'), ensure_ascii=False)
+                    alternate_titles = publisher.get('alternate_titles')
+                    publisher['alternate_titles'] = json.dumps(alternate_titles, ensure_ascii=False) if alternate_titles else None
+
+                    country_codes = publisher.get('country_codes')
+                    publisher['country_codes'] = json.dumps(country_codes, ensure_ascii=False) if country_codes else None
+
                     publishers_writer.writerow(publisher)
 
-                    if publisher_ids := publisher.get('ids'):
+                    publisher_ids = publisher.get('ids')
+                    if publisher_ids:
                         publisher_ids['publisher_id'] = publisher_id
                         ids_writer.writerow(publisher_ids)
 
-                    if counts_by_year := publisher.get('counts_by_year'):
+                    counts_by_year = publisher.get('counts_by_year')
+                    if counts_by_year:
                         for count_by_year in counts_by_year:
                             count_by_year['publisher_id'] = publisher_id
                             counts_by_year_writer.writerow(count_by_year)
