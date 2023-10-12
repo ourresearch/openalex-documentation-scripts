@@ -294,35 +294,42 @@ def flatten_concepts():
 
                     concept = json.loads(concept_json)
 
-                    if not (concept_id := concept.get('id')) or concept_id in seen_concept_ids:
+                    concept_id = concept.get('id')
+                    if not concept_id or concept_id in seen_concept_ids:
                         continue
 
                     seen_concept_ids.add(concept_id)
 
                     concepts_writer.writerow(concept)
 
-                    if concept_ids := concept.get('ids'):
+                    concept_ids = concept.get('ids')
+                    if concept_ids:
                         concept_ids['concept_id'] = concept_id
                         concept_ids['umls_aui'] = json.dumps(concept_ids.get('umls_aui'), ensure_ascii=False)
                         concept_ids['umls_cui'] = json.dumps(concept_ids.get('umls_cui'), ensure_ascii=False)
                         ids_writer.writerow(concept_ids)
 
-                    if ancestors := concept.get('ancestors'):
+                    ancestors = concept.get('ancestors')
+                    if ancestors:
                         for ancestor in ancestors:
-                            if ancestor_id := ancestor.get('id'):
+                            ancestor_id = ancestor.get('id')
+                            if ancestor_id:
                                 ancestors_writer.writerow({
                                     'concept_id': concept_id,
                                     'ancestor_id': ancestor_id
                                 })
 
-                    if counts_by_year := concept.get('counts_by_year'):
+                    counts_by_year = concept.get('counts_by_year')
+                    if counts_by_year:
                         for count_by_year in counts_by_year:
                             count_by_year['concept_id'] = concept_id
                             counts_by_year_writer.writerow(count_by_year)
 
-                    if related_concepts := concept.get('related_concepts'):
+                    related_concepts = concept.get('related_concepts')
+                    if related_concepts:
                         for related_concept in related_concepts:
-                            if related_concept_id := related_concept.get('id'):
+                            related_concept_id = related_concept.get('id')
+                            if related_concept_id:
                                 related_concepts_writer.writerow({
                                     'concept_id': concept_id,
                                     'related_concept_id': related_concept_id,
