@@ -582,30 +582,33 @@ def flatten_works():
 
                     work = json.loads(work_json)
 
-                    if not (work_id := work.get('id')):
+                    work_id = work.get('id')
+                    if not work_id:
                         continue
 
                     # works
-                    if (abstract := work.get('abstract_inverted_index')) is not None:
+                    abstract = work.get('abstract_inverted_index')
+                    if abstract is not None:
                         work['abstract_inverted_index'] = json.dumps(abstract, ensure_ascii=False)
 
                     works_writer.writerow(work)
 
                     # primary_locations
-                    if primary_location := (work.get('primary_location') or {}):
-                        if primary_location.get('source') and primary_location.get('source').get('id'):
-                            primary_locations_writer.writerow({
-                                'work_id': work_id,
-                                'source_id': primary_location['source']['id'],
-                                'landing_page_url': primary_location.get('landing_page_url'),
-                                'pdf_url': primary_location.get('pdf_url'),
-                                'is_oa': primary_location.get('is_oa'),
-                                'version': primary_location.get('version'),
-                                'license': primary_location.get('license'),
-                            })
+                    primary_location = work.get('primary_location') or {}
+                    if primary_location.get('source') and primary_location.get('source').get('id'):
+                        primary_locations_writer.writerow({
+                            'work_id': work_id,
+                            'source_id': primary_location['source']['id'],
+                            'landing_page_url': primary_location.get('landing_page_url'),
+                            'pdf_url': primary_location.get('pdf_url'),
+                            'is_oa': primary_location.get('is_oa'),
+                            'version': primary_location.get('version'),
+                            'license': primary_location.get('license'),
+                        })
 
                     # locations
-                    if locations := work.get('locations'):
+                    locations = work.get('locations')
+                    if locations:
                         for location in locations:
                             if location.get('source') and location.get('source').get('id'):
                                 locations_writer.writerow({
@@ -619,25 +622,26 @@ def flatten_works():
                                 })
 
                     # best_oa_locations
-                    if best_oa_location := (work.get('best_oa_location') or {}):
-                        if best_oa_location.get('source') and best_oa_location.get('source').get('id'):
-                            best_oa_locations_writer.writerow({
-                                'work_id': work_id,
-                                'source_id': best_oa_location['source']['id'],
-                                'landing_page_url': best_oa_location.get('landing_page_url'),
-                                'pdf_url': best_oa_location.get('pdf_url'),
-                                'is_oa': best_oa_location.get('is_oa'),
-                                'version': best_oa_location.get('version'),
-                                'license': best_oa_location.get('license'),
-                            })
+                    best_oa_location = work.get('best_oa_location') or {}
+                    if best_oa_location.get('source') and best_oa_location.get('source').get('id'):
+                        best_oa_locations_writer.writerow({
+                            'work_id': work_id,
+                            'source_id': best_oa_location['source']['id'],
+                            'landing_page_url': best_oa_location.get('landing_page_url'),
+                            'pdf_url': best_oa_location.get('pdf_url'),
+                            'is_oa': best_oa_location.get('is_oa'),
+                            'version': best_oa_location.get('version'),
+                            'license': best_oa_location.get('license'),
+                        })
 
                     # authorships
-                    if authorships := work.get('authorships'):
+                    authorships = work.get('authorships')
+                    if authorships:
                         for authorship in authorships:
-                            if author_id := authorship.get('author', {}).get('id'):
+                            author_id = authorship.get('author', {}).get('id')
+                            if author_id:
                                 institutions = authorship.get('institutions')
-                                institution_ids = [i.get('id') for i in institutions]
-                                institution_ids = [i for i in institution_ids if i]
+                                institution_ids = [i.get('id') for i in institutions if i.get('id')]
                                 institution_ids = institution_ids or [None]
 
                                 for institution_id in institution_ids:
@@ -650,13 +654,15 @@ def flatten_works():
                                     })
 
                     # biblio
-                    if biblio := work.get('biblio'):
+                    biblio = work.get('biblio')
+                    if biblio:
                         biblio['work_id'] = work_id
                         biblio_writer.writerow(biblio)
 
                     # concepts
                     for concept in work.get('concepts'):
-                        if concept_id := concept.get('id'):
+                        concept_id = concept.get('id')
+                        if concept_id:
                             concepts_writer.writerow({
                                 'work_id': work_id,
                                 'concept_id': concept_id,
@@ -664,7 +670,8 @@ def flatten_works():
                             })
 
                     # ids
-                    if ids := work.get('ids'):
+                    ids = work.get('ids')
+                    if ids:
                         ids['work_id'] = work_id
                         ids_writer.writerow(ids)
 
@@ -674,7 +681,8 @@ def flatten_works():
                         mesh_writer.writerow(mesh)
 
                     # open_access
-                    if open_access := work.get('open_access'):
+                    open_access = work.get('open_access')
+                    if open_access:
                         open_access['work_id'] = work_id
                         open_access_writer.writerow(open_access)
 
