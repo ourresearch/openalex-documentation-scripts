@@ -517,7 +517,8 @@ def flatten_sources():
 
                     source = json.loads(source_json)
 
-                    if not (source_id := source.get('id')) or source_id in seen_source_ids:
+                    source_id = source.get('id')
+                    if not source_id or source_id in seen_source_ids:
                         continue
 
                     seen_source_ids.add(source_id)
@@ -525,12 +526,14 @@ def flatten_sources():
                     source['issn'] = json.dumps(source.get('issn'))
                     sources_writer.writerow(source)
 
-                    if source_ids := source.get('ids'):
+                    source_ids = source.get('ids')
+                    if source_ids:
                         source_ids['source_id'] = source_id
                         source_ids['issn'] = json.dumps(source_ids.get('issn'))
                         ids_writer.writerow(source_ids)
 
-                    if counts_by_year := source.get('counts_by_year'):
+                    counts_by_year = source.get('counts_by_year')
+                    if counts_by_year:
                         for count_by_year in counts_by_year:
                             count_by_year['source_id'] = source_id
                             counts_by_year_writer.writerow(count_by_year)
