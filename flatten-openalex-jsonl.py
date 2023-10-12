@@ -231,23 +231,27 @@ def flatten_authors():
 
                     author = json.loads(author_json)
 
-                    if not (author_id := author.get('id')):
+                    if not author.get('id'):
                         continue
 
                     # authors
-                    author['display_name_alternatives'] = json.dumps(author.get('display_name_alternatives'), ensure_ascii=False)
-                    author['last_known_institution'] = (author.get('last_known_institution') or {}).get('id')
+                    display_name_alternatives = author.get('display_name_alternatives')
+                    author['display_name_alternatives'] = json.dumps(display_name_alternatives, ensure_ascii=False)
+                    last_known_institution = author.get('last_known_institution')
+                    author['last_known_institution'] = last_known_institution.get('id') if last_known_institution else None
                     authors_writer.writerow(author)
 
                     # ids
-                    if author_ids := author.get('ids'):
-                        author_ids['author_id'] = author_id
+                    author_ids = author.get('ids')
+                    if author_ids:
+                        author_ids['author_id'] = author['id']
                         ids_writer.writerow(author_ids)
 
                     # counts_by_year
-                    if counts_by_year := author.get('counts_by_year'):
+                    counts_by_year = author.get('counts_by_year')
+                    if counts_by_year:
                         for count_by_year in counts_by_year:
-                            count_by_year['author_id'] = author_id
+                            count_by_year['author_id'] = author['id']
                             counts_by_year_writer.writerow(count_by_year)
             files_done += 1
             if FILES_PER_ENTITY and files_done >= FILES_PER_ENTITY:
