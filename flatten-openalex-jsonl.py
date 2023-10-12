@@ -392,7 +392,7 @@ def flatten_institutions():
 
                     # associated_institutions
                     if associated_institutions := institution.get(
-                        'associated_institutions', institution.get('associated_insitutions')  # typo in api
+                        'associated_institutions', institution.get('associated_institutions')  # typo in api
                     ):
                         for associated_institution in associated_institutions:
                             if associated_institution_id := associated_institution.get('id'):
