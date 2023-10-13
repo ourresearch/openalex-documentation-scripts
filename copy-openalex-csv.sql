@@ -34,7 +34,7 @@
 
 --works
 
-\copy openalex.works (id, doi, title, display_name, publication_year, publication_date, type, cited_by_count, is_retracted, is_paratext, cited_by_api_url, abstract_inverted_index) from program 'gunzip -c csv-files/works.csv.gz' csv header
+\copy openalex.works (id, doi, title, display_name, publication_year, publication_date, type, cited_by_count, is_retracted, is_paratext, cited_by_api_url, abstract_inverted_index, language) from program 'gunzip -c csv-files/works.csv.gz' csv header
 \copy openalex.works_primary_locations (work_id, source_id, landing_page_url, pdf_url, is_oa, version, license) from program 'gunzip -c csv-files/works_primary_locations.csv.gz' csv header
 \copy openalex.works_locations (work_id, source_id, landing_page_url, pdf_url, is_oa, version, license) from program 'gunzip -c csv-files/works_locations.csv.gz' csv header
 \copy openalex.works_best_oa_locations (work_id, source_id, landing_page_url, pdf_url, is_oa, version, license) from program 'gunzip -c csv-files/works_best_oa_locations.csv.gz' csv header
