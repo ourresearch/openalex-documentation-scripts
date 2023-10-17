@@ -130,7 +130,7 @@ csv_files = {
             'name': os.path.join(CSV_DIR, 'works.csv.gz'),
             'columns': [
                 'id', 'doi', 'title', 'display_name', 'publication_year', 'publication_date', 'type', 'cited_by_count',
-                'is_retracted', 'is_paratext', 'cited_by_api_url', 'abstract_inverted_index'
+                'is_retracted', 'is_paratext', 'cited_by_api_url', 'abstract_inverted_index','language'
             ]
         },
         'primary_locations': {

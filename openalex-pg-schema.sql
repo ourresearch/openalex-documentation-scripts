@@ -324,7 +324,8 @@ CREATE TABLE openalex.works (
     is_retracted boolean,
     is_paratext boolean,
     cited_by_api_url text,
-    abstract_inverted_index json
+    abstract_inverted_index json,
+    language text
 );
 
 --
