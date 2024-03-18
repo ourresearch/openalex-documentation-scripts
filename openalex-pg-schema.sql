@@ -72,6 +72,24 @@ CREATE TABLE openalex.authors_ids (
 );
 
 
+CREATE TABLE openalex.topics (
+    id text NOT NULL,
+    display_name text,
+    subfield_id text,
+    subfield_display_name text,
+    field_id text,
+    field_display_name text,
+    domain_id text,
+    domain_display_name text,
+    description text,
+    keywords text,
+    works_api_url text,
+    wikipedia_id text,
+    works_count integer,
+    cited_by_count integer,
+    updated_date timestamp without time zone
+);
+
 --
 -- Name: concepts; Type: TABLE; Schema: openalex; Owner: -
 --
@@ -398,6 +416,15 @@ CREATE TABLE openalex.works_biblio (
     last_page text
 );
 
+--
+-- Name: works_topics; Type: TABLE; Schema: openalex; Owner: -
+--
+
+CREATE TABLE openalex.works_topics (
+    work_id text,
+    topic_id text,
+    score real
+);
 
 --
 -- Name: works_concepts; Type: TABLE; Schema: openalex; Owner: -

@@ -4,6 +4,10 @@
 \copy openalex.authors_ids (author_id, openalex, orcid, scopus, twitter, wikipedia, mag) from program 'gunzip -c csv-files/authors_ids.csv.gz' csv header
 \copy openalex.authors_counts_by_year (author_id, year, works_count, cited_by_count, oa_works_count) from program 'gunzip -c csv-files/authors_counts_by_year.csv.gz' csv header
 
+-- topics
+
+\copy openalex.topics (id, display_name, subfield_id, subfield_display_name, field_id, field_display_name, domain_id, domain_display_name, description, keywords, works_api_url, wikipedia_id, works_count, cited_by_count, updated_date) from program 'gunzip -c csv-files/topics.csv.gz' csv header
+
 --concepts
 
 \copy openalex.concepts (id, wikidata, display_name, level, description, works_count, cited_by_count, image_url, image_thumbnail_url, works_api_url, updated_date) from program 'gunzip -c csv-files/concepts.csv.gz' csv header
@@ -40,6 +44,7 @@
 \copy openalex.works_best_oa_locations (work_id, source_id, landing_page_url, pdf_url, is_oa, version, license) from program 'gunzip -c csv-files/works_best_oa_locations.csv.gz' csv header
 \copy openalex.works_authorships (work_id, author_position, author_id, institution_id, raw_affiliation_string) from program 'gunzip -c csv-files/works_authorships.csv.gz' csv header
 \copy openalex.works_biblio (work_id, volume, issue, first_page, last_page) from program 'gunzip -c csv-files/works_biblio.csv.gz' csv header
+\copy openalex.works_topics (work_id, topic_id, score) from program 'gunzip -c csv-files/works_topics.csv.gz' csv header
 \copy openalex.works_concepts (work_id, concept_id, score) from program 'gunzip -c csv-files/works_concepts.csv.gz' csv header
 \copy openalex.works_ids (work_id, openalex, doi, mag, pmid, pmcid) from program 'gunzip -c csv-files/works_ids.csv.gz' csv header
 \copy openalex.works_mesh (work_id, descriptor_ui, descriptor_name, qualifier_ui, qualifier_name, is_major_topic) from program 'gunzip -c csv-files/works_mesh.csv.gz' csv header
