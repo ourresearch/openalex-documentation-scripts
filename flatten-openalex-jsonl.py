@@ -73,7 +73,7 @@ csv_files = {
                         'field_display_name',
                         'domain_id', 'domain_display_name', 'description',
                         'keywords', 'works_api_url', 'wikipedia_id',
-                        'works_count', 'cited_by_count', 'updated_date']
+                        'works_count', 'cited_by_count', 'updated_date', 'siblings']
         }
     },
     'institutions': {
