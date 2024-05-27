@@ -826,7 +826,7 @@ def flatten_works():
                         biblio_writer.writerow(biblio)
 
                     # topics
-                    for topic in work.get('topics'):
+                    for topic in work.get('topics', []):
                         if topic_id := topic.get('id'):
                             topics_writer.writerow({
                                 'work_id': work_id,
